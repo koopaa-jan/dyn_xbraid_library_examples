@@ -207,9 +207,9 @@ my_Access(braid_App          app,
     if (!(iteration != 0 && index == 0)) {
         file = fopen(filename, "w");
         for (int i = 0; i < SIZE * SIZE; i++) {
-	    if (i % 10 == 0) {
+	    // if (i % 10 == 0) {
             	fprintf(file, "%03.3f ", u->value[i]);
-	    }
+	    // }
             if (i % SIZE == SIZE - 1) {
                 fprintf(file, "\n");
             }
