@@ -7,7 +7,7 @@
  *
  * Compile with:  make ex-heat_equation_2D
  * 
- * Sample run:    mpirun -np 2 --host n01,n02 ex-heat_equation_2D 1.0 2
+ * Sample run:    mpirun -np 2 ex-heat_equation_2D 1.0
  * 
  **/
 
@@ -16,6 +16,8 @@
 #include <math.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <errno.h>
 
 
 #include "braid_dyn.h"
@@ -25,21 +27,22 @@
  * User-defined routines and structures
  *--------------------------------------------------------------------------*/
 
-#define SIZE 7 // number of temperature points, number of spatical points in the grid, attention > 100000 too big, 50000 good size
-#define NTIME 100 // number of time steps to simulate attention, > 5000 crashed computer, 2000 good size
+#define SIZE 7 // 15000 number of temperature points, number of spatical points in the grid, attention > 16300 biggest possible
+#define NTIME 100 // 2000 number of time steps to simulate attention, > 5000 crashed computer, 2000 good size
 #define ALPHA 1.0 // thermal diffusivity of the material, indicated how quickly the material conducts heat
 #define DT 0.01 // time step size
 #define DX 1.0 // distance between spacial points in x-dimension, up and down
 #define DY 1.0 // distance between spacial points in y-dimension, left and right
-#define TSTOP 1.0 // end of time period, NTIME * DT
+#define TSTOP 1.0 // 20.0 end of time period, NTIME * DT
 
 
-// CFL: alpha * DT / DX^2 <= 1/2 then the simulation is considered stable
+// CFL: 2 * alpha * DT / (DX^2 DY^2) <= 1 then the simulation is considered stable
 
 /* App structure can contain anything, and be named anything as well */
 typedef struct _braid_App_struct
 {
     int       rank;
+    int file_num;
 } my_App;
 
 /* Vector structure can contain anything, and be name anything as well */
@@ -179,7 +182,17 @@ my_Access(braid_App          app,
     int        iteration = 0;
 
     braid_AccessStatusGetTIndex(astatus, &index);
-    sprintf(filename, "%s.%04d.%04d.%03d", "ex-h_e_2D.out", iteration, index, app->rank);
+    
+    char directory_name[100];
+    sprintf(directory_name, "output_dir_%d", (app->file_num));
+    struct stat buf;
+    if (stat(directory_name, &buf) != 0) {
+	    if(errno == ENOENT) {
+	    	mkdir(directory_name, 0777);
+	    }
+    }
+
+    sprintf(filename, "%s/%s.%04d.%04d.%03d", directory_name, "ex-h_e_2D.out", iteration, index, app->rank);
 
     file = fopen(filename, "r");
 
@@ -187,14 +200,16 @@ my_Access(braid_App          app,
         iteration++;
         fclose(file);
 
-        sprintf(filename, "%s.%04d.%04d.%03d", "ex-h_e_2D.out", iteration, index, app->rank);
+        sprintf(filename, "%s/%s.%04d.%04d.%03d", directory_name, "ex-h_e_2D.out", iteration, index, app->rank);
 
         file = fopen(filename, "r");
     }
     if (!(iteration != 0 && index == 0)) {
         file = fopen(filename, "w");
         for (int i = 0; i < SIZE * SIZE; i++) {
-            fprintf(file, "%f ", u->value[i]);
+	    if (i % 10 == 0) {
+            	fprintf(file, "%03.3f ", u->value[i]);
+	    }
             if (i % SIZE == SIZE - 1) {
                 fprintf(file, "\n");
             }
@@ -275,6 +290,7 @@ int main (int argc, char *argv[])
     app = (my_App *) malloc(sizeof(my_App));
     // only used for my_access
     (app->rank)   = 0;
+    (app->file_num) = 0;
 
     //newDyn look for new parameter in command
     double interval_len = 0.0;
@@ -284,9 +300,9 @@ int main (int argc, char *argv[])
     if (argc > 1) {
         interval_len = strtod(argv[1], &endptr);
 
-        if (argc > 2) {
-            max_procs = atoi(argv[2]);
-        }
+         if (argc > 2) {
+           (app->file_num) = atoi(argv[2]);
+         }
     }
     if (argc <= 1 || interval_len <= tstart || interval_len > tstop) {
         // make sure interval_len is valid
@@ -306,7 +322,7 @@ int main (int argc, char *argv[])
     /* Set the info for reconfigurations */
     MPI_Info info;
     MPI_Info_create(&info);
-    MPI_Info_set(info, "mpi_num_procs_sub", "2");
+    MPI_Info_set(info, "mpi_num_procs_add", "20");
     braid_Set_Info(info);
     MPI_Info_free(&info);
 
@@ -316,10 +332,6 @@ int main (int argc, char *argv[])
 
     braid_Destroy_Dyn(core_dyn);
     free(app);
-
-    for (int i = 0; i < argc; ++i) {
-        printf("argv[%d]: %s\n", i, argv[i]);
-    }
 
     return (0);
 }
