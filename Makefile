@@ -6,7 +6,7 @@ INCLUDES=
 LIBS = -lm -lxbraid_dyn -lmpi
 
 # Targets
-all: ex-01_dyn ex-heat_equation ex-heat_equation_2D 
+all: ex-01_dyn ex-heat_equation ex-heat_equation_2D not_dyn_h_e_2D
 
 ex-01_dyn: ex-01_dyn.o
 	$(CC) $(CFLAGS) $(INCLUDES) ex-01_dyn.o -o $@ $(LIBPATHS) $(LIBS)
@@ -26,6 +26,11 @@ ex-heat_equation_2D: ex-heat_equation_2D.o
 ex-heat_equation_2D.o: ex-heat_equation_2D.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
 
+not_dyn_h_e_2D: not_dyn_h_e_2D.o
+	        $(CC) $(CFLAGS) $(INCLUDES) not_dyn_h_e_2D.o -o $@ $(LIBPATHS) -Wl,-rpath,$(LIBPATH) $(LIBS)
+
+not_dyn_h_e_2D.o: not_dyn_h_e_2D.c
+	        $(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
 
 clean:
-	rm -f *.o *.out.* ex-01_dyn ex-heat_equation ex-heat_equation_2D 
+	rm -f *.o *.out.* ex-01_dyn ex-heat_equation ex-heat_equation_2D not_dyn_h_e_2D
