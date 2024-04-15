@@ -271,7 +271,37 @@ my_Access(braid_App          app,
    braid_AccessStatusGetNTPoints(astatus, &ntime);
    
    /* Print solution to file if simulation is over */
+   if(done)
+   {
+      char directory_name[100];
+      sprintf(directory_name, "output_dir_%d", (app->file_num));
+      struct stat buf;
+      if (stat(directory_name, &buf) != 0) {
+      	if(errno == ENOENT) {
+		mkdir(directory_name, 0777);
+	}
+      }
+      
+      rank = (app->rank);
+      sprintf(filename, "%s/%s.%04d.%07d.%05d", directory_name, "ex-02.out", iteration, index, rank);
 
+      file = fopen(filename, "r");
+      while(file != NULL) {
+	      iteration++;
+	      fclose(file);
+
+	      sprintf(filename, "%s/%s.%04d.%07d.%05d", directory_name, "ex-02.out", iteration, index, rank);
+	      file = fopen(filename, "r");
+      }
+
+      if (!(iteration != 0 && index == 0)) {
+	      
+
+      save_solution(filename, u->values, u->size, app->xstart, 
+            app->xstop, ntime, app->tstart, app->tstop, t);
+
+      }
+   }
    /* IF on the finest level AND print_level is high enough AND at the final time,
     * THEN print out the discretization error */
    if( (level == 0) && ((app->print_level) > 0) && (index == ntime) )
