@@ -27,13 +27,13 @@
  * User-defined routines and structures
  *--------------------------------------------------------------------------*/
 
-#define SIZE 7 // 15000 number of temperature points, number of spatical points in the grid, attention > 16300 biggest possible
-#define NTIME 100 // 2000 number of time steps to simulate attention, > 5000 crashed computer, 2000 good size
+#define SIZE 1000 //  number of temperature points, number of spatical points in the grid, attention, 1000 already too big for 30mins
+#define NTIME 2000 // 2000 number of time steps to simulate attention, > 5000 crashed computer, 2000 good size
 #define ALPHA 1.0 // thermal diffusivity of the material, indicated how quickly the material conducts heat
 #define DT 0.01 // time step size
 #define DX 1.0 // distance between spacial points in x-dimension, up and down
 #define DY 1.0 // distance between spacial points in y-dimension, left and right
-#define TSTOP 1.0 // 20.0 end of time period, NTIME * DT
+#define TSTOP 20.0 // 20.0 end of time period, NTIME * DT
 
 
 // CFL: 2 * alpha * DT / (DX^2 DY^2) <= 1 then the simulation is considered stable
@@ -99,8 +99,8 @@ my_Init(braid_App     app,
     if (t == 0.0) {
         for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
-            if (i == SIZE / 2 && j == SIZE / 2) {
-                u->value[i * SIZE + j] = 1.0;
+            if ((i == SIZE / 2 && j == SIZE / 2)) {
+                u->value[i * SIZE + j] = 100.0;
             } else {
                 u->value[i * SIZE + j] = 0.0;
             }
@@ -208,7 +208,7 @@ my_Access(braid_App          app,
         file = fopen(filename, "w");
         for (int i = 0; i < SIZE * SIZE; i++) {
 	    // if (i % 10 == 0) {
-            	fprintf(file, "%03.3f ", u->value[i]);
+             // fprintf(file, "%03.3f ", u->value[i]);
 	    // }
             if (i % SIZE == SIZE - 1) {
                 fprintf(file, "\n");
@@ -319,10 +319,21 @@ int main (int argc, char *argv[])
     braid_SetMaxLevels(braid_dyn_get_original_core(core_dyn), 2);
     braid_SetAbsTol(braid_dyn_get_original_core(core_dyn), 1.0e-06);
 
+
+    // getting the dmr info settings
+    char *info_str = "mpi_num_procs_add";
+    char *info_num = "0";
+    if (argc > 4) {
+	    if (strcmp(argv[3], "-") == 0) {
+		    info_str = "mpi_num_procs_sub";
+	    }
+	    info_num = argv[4];
+    }
+
     /* Set the info for reconfigurations */
     MPI_Info info;
     MPI_Info_create(&info);
-    MPI_Info_set(info, "mpi_num_procs_add", "20");
+    MPI_Info_set(info, info_str, info_num);
     braid_Set_Info(info);
     MPI_Info_free(&info);
 

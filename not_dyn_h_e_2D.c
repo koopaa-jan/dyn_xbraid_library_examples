@@ -27,13 +27,13 @@
  * User-defined routines and structures
  *--------------------------------------------------------------------------*/
 
-#define SIZE 7 // 15000 number of temperature points, number of spatical points in the grid, attention > 16300 biggest possible
-#define NTIME 20 // 2000 number of time steps to simulate attention, > 5000 crashed computer, 2000 good size
+#define SIZE 1000 // 15000 number of temperature points, number of spatical points in the grid, attention > 16300 biggest possible
+#define NTIME 2000 // 2000 number of time steps to simulate attention, > 5000 crashed computer, 2000 good size
 #define ALPHA 1.0 // thermal diffusivity of the material, indicated how quickly the material conducts heat
 #define DT 0.01 // time step size
 #define DX 1.0 // distance between spacial points in x-dimension, up and down
 #define DY 1.0 // distance between spacial points in y-dimension, left and right
-#define TSTOP 0.2 // 20.0 end of time period, NTIME * DT
+#define TSTOP 20.0 // 20.0 end of time period, NTIME * DT
 
 
 // CFL: 2 * alpha * DT / (DX^2 DY^2) <= 1 then the simulation is considered stable
