@@ -6,7 +6,7 @@
 #SBATCH --clusters=cm2_tiny
 #SBATCH --partition=cm2_tiny
 #SBATCH --nodes=4
-#SBATCH --ntasks-per-node=25
+#SBATCH --ntasks-per-node=28
 #SBATCH --mail-type=end
 #SBATCH --mail-user=jan.grimm@tum.de
 #SBATCH --export=ALL
@@ -14,4 +14,4 @@
   
 module load slurm_setup
  
-time mpirun -np 50 ./ex-heat_equation_2D 10.0 22 + 50
+time mpirun -np 56 ./ex-heat_equation_2D 10.0 22 + 56

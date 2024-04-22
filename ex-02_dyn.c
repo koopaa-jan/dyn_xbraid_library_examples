@@ -285,14 +285,14 @@ my_Access(braid_App          app,
       }
       
       rank = (app->rank);
-      sprintf(filename, "%s/%s.%04d.%07d.%05d", directory_name, "ex-02_dyn.out", iteration, index, rank);
+      sprintf(filename, "%s/%s.%04d.%07d.%05d", directory_name, "ex-02_dyn.out", iteration, index, 0);
 
       file = fopen(filename, "r");
       while(file != NULL) {
 	      iteration++;
 	      fclose(file);
 
-	      sprintf(filename, "%s/%s.%04d.%07d.%05d", directory_name, "ex-02_dyn.out", iteration, index, rank);
+	      sprintf(filename, "%s/%s.%04d.%07d.%05d", directory_name, "ex-02_dyn.out", iteration, index, 0);
 	      file = fopen(filename, "r");
       }
 
@@ -718,7 +718,8 @@ int main (int argc, char *argv[])
    
    
    core = braid_dyn_get_original_core(core_dyn);
-   braid_Get_MPI_Rank(core, &(app->rank));
+   braid_Get_MPI_Rank(core, &rank);
+   (app->rank) = rank;
    /* The first step before running simulations, is always to verify the wrapper tests */
    if(wrapper_tests)
    {

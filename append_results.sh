@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DIRECTORY_PATH="./"
-NAME_START="ex-h_e_2D.out."
+NAME_START="ex-"
 
 OUTPUT_FILE_BASE="comp_out"
 

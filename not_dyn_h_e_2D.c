@@ -100,7 +100,7 @@ my_Init(braid_App     app,
         for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
             if (i == SIZE / 2 && j == SIZE / 2) {
-                u->value[i * SIZE + j] = 1.0;
+                u->value[i * SIZE + j] = 100.0;
             } else {
                 u->value[i * SIZE + j] = 0.0;
             }
@@ -208,7 +208,7 @@ my_Access(braid_App          app,
         file = fopen(filename, "w");
         for (int i = 0; i < SIZE * SIZE; i++) {
 	    // if (i % 10 == 0) {
-            	fprintf(file, "%03.3f ", u->value[i]);
+            	//fprintf(file, "%03.3f ", u->value[i]);
 	    // }
             if (i % SIZE == SIZE - 1) {
                 fprintf(file, "\n");

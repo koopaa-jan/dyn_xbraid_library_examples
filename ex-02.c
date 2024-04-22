@@ -43,6 +43,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <errno.h>
 
 #include "braid.h"
 #include "braid_test.h"
@@ -69,6 +71,7 @@ typedef struct _braid_App_struct
    int       refine_time;  /* Boolean, controls whether adaptive refinement in time is turned on */
    double    error_tol;    /* If doing adaptive refinement, use this absolute step-wise error tol */ 
    int file_num;
+   int rank;
 } my_App;
 
 /* Can put anything in my vector and name it anything as well */
@@ -693,6 +696,8 @@ int main (int argc, char *argv[])
    braid_Init(MPI_COMM_WORLD, comm, tstart, tstop, ntime, app,
           my_Step, my_Init, my_Clone, my_Free, my_Sum, my_SpatialNorm, 
           my_Access, my_BufSize, my_BufPack, my_BufUnpack, &core);
+
+   MPI_Comm_rank(MPI_COMM_WORLD, &(app->rank));
    
    /* The first step before running simulations, is always to verify the wrapper tests */
    if(wrapper_tests)

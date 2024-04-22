@@ -21,7 +21,7 @@ ex-02.o: ex-02.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
 
 ex-02_dyn: ex-02_dyn.o
-	$(CC) $(CFLAGS) $(INCLUDES) ex-02.o -o $@ $(LIBPATHS) -Wl,-rpath,$(LIBPATHS) $(LIBS)
+	$(CC) $(CFLAGS) $(INCLUDES) ex-02_dyn.o -o $@ $(LIBPATHS) -Wl,-rpath,$(LIBPATHS) $(LIBS)
 
 ex-02_dyn.o: ex-02_dyn.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@

@@ -5,13 +5,13 @@
 #SBATCH --get-user-env
 #SBATCH --clusters=cm2_tiny
 #SBATCH --partition=cm2_tiny
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=28
 #SBATCH --mail-type=end
 #SBATCH --mail-user=jan.grimm@tum.de
 #SBATCH --export=ALL
-#SBATCH --time=06:00:00
+#SBATCH --time=08:00:00
   
 module load slurm_setup
  
-time mpirun -np 1 ./ex-02 1
+time mpirun -np 56 ./ex-02 -file_num 5 -ntime 32768 -nspace 16385
