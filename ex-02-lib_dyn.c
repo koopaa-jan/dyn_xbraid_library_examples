@@ -353,7 +353,7 @@ save_solution(char   *filename,
 {
    FILE      *file;
    int i;
-   
+
    file = fopen(filename, "w");
    fprintf(file, "%d\n",    ntime +1);
    fprintf(file, "%.14e\n", tstart );

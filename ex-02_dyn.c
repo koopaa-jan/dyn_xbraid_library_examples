@@ -298,8 +298,7 @@ my_Access(braid_App          app,
 
       if (!(iteration != 0 && index == 0)) {
 	      
-
-      save_solution(filename, u->values, u->size, app->xstart, 
+      	save_solution(filename, u->values, u->size, app->xstart, 
             app->xstop, ntime, app->tstart, app->tstop, t);
 
       }
@@ -315,11 +314,6 @@ my_Access(braid_App          app,
    }
 
    return 0;
-}
-
-double
-my_GetValue(braid_Vector u){
-	return 0.;
 }
 
 int
@@ -712,8 +706,8 @@ int main (int argc, char *argv[])
    }
    
    /* Initialize Braid */
-   braid_Init_Dyn(tstart, tstop, ntime, interval_len, 0, app,
-          my_Step, my_Init, my_Clone, my_Free, my_Sum, my_SpatialNorm, my_GetValue, 
+   braid_Init_Dyn(tstart, tstop, ntime, interval_len, app,
+          my_Step, my_Init, my_Clone, my_Free, my_Sum, my_SpatialNorm, 
           my_Access, my_BufSize, my_BufPack, my_BufUnpack, &core_dyn);
    
    

@@ -222,15 +222,6 @@ my_Access(braid_App          app,
     return 0;
 }
 
-double
-my_GetValue(braid_Vector u) {
-    for (int i = 0; i < SIZE; i++) {
-        printf("%f  ", u->value[i]);
-    }
-    printf("\n");
-    return 0.;
-}
-
 int
 my_BufSize(braid_App          app,
            int                *size_ptr,
